@@ -1,8 +1,8 @@
 # Hermes Task Pool
 
-A project-scoped task pool for Hermes Desktop and Hermes Agent. The Desktop panel and Agent tools share the same profile-backed store. Cards record progress only: they do not assign, dispatch, or start work.
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-项目范围的 Hermes 任务池。桌面面板与 Agent 工具共用同一 profile 的任务数据；任务卡只记录进度，不会派发或启动任务。
+A project-scoped task pool for Hermes Desktop and Hermes Agent. The Desktop panel and Agent tools share the same profile-backed store. Cards record progress only: they do not assign, dispatch, or start work.
 
 ## Install
 
@@ -10,11 +10,10 @@ A project-scoped task pool for Hermes Desktop and Hermes Agent. The Desktop pane
 
 [Install from Git in Hermes Desktop](hermes://plugin/install?repo=richli-fugui/hermes-taskpool&enable=1)
 
-1. Review the repository and confirm the install in Hermes Desktop.
-2. Select both the **Agent plugin** and the **Desktop plugin**.
-3. Enable the `pp-pane` Desktop plugin in the Desktop plugin manager if it is off.
+1. Open the link above, or open **Capabilities → Plugins → Install from Git**.
+2. Review the repository and select both the **Agent plugin** and the **Desktop plugin**.
+3. Confirm the install. Enable `pp-pane` in the Desktop plugin manager if the UI component is off.
 4. Ensure `project_task_pool` is enabled on the Agent surface you use, then open a **new** conversation in a registered Hermes project.
-5. Say **“整理一下任务卡”**. The Agent should read the existing pool before suggesting or making changes.
 
 The Desktop installer keeps the two components together while installing the Agent backend to the selected Hermes profile and the UI component to the Desktop app. For a remote Gateway, the backend must be installed on the Gateway's Hermes runtime; the Desktop component must be available to the machine running Hermes Desktop.
 
@@ -28,13 +27,12 @@ hermes tools enable project_task_pool --platform cli
 
 This installs the Agent/backend half. Use Hermes Desktop's **Install from Git** flow to install the Desktop half as well.
 
-Full setup and troubleshooting: [`docs/INSTALL.md`](docs/INSTALL.md).
+Full setup and troubleshooting: [English](docs/INSTALL.md) | [简体中文](docs/INSTALL.zh-CN.md).
 
 ## What it provides
 
 - A Hermes Desktop task-pool panel with five states: `todo`, `doing`, `blocked`, `review`, and `done`.
 - Agent tools: `task_pool_list`, `task_pool_add`, and `task_pool_update`.
-- Natural-language intent in the tool description: “整理一下任务卡” means this Task Pool, not Hermes Kanban or `todo_list`.
 - Project isolation: the Agent derives project identity from its current session working directory and Hermes's registered project list. Unregistered or ambiguous identities fail closed.
 - Safer writes: `task_pool_add` supports idempotency keys; updates require the current task revision; read-after-write verification is recommended. The Agent API does not expose deletion.
 - A shared SQLite-backed store managed through Hermes plugin storage; no separate database service or API key is required.

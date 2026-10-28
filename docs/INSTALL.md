@@ -1,5 +1,7 @@
 # Install and verify Hermes Task Pool
 
+[English](INSTALL.md) | [简体中文](INSTALL.zh-CN.md)
+
 This project is a unified Hermes plugin: the Agent/backend half and the Hermes Desktop UI are installed from the same Git repository. The repository root is the plugin package; no Node build is needed for ordinary installation.
 
 This is a custom Git source, not a reviewed catalog entry. Review the source before installing. Hermes Desktop plugins run inside the app with the app's authority; they are not sandboxed.
@@ -20,7 +22,7 @@ Validated on Hermes Agent `v0.22.2+2579.g601491f` (`2026.9.24`). This is a teste
 4. Confirm the install. Enable the `pp-pane` Desktop plugin in the Desktop plugin manager if the UI component remains off.
 5. Confirm the Agent plugin is enabled for the active Hermes profile. The supplied toolset is named `project_task_pool`.
 6. Enable the toolset on the Agent surface you use. For the CLI, run `hermes tools enable project_task_pool --platform cli`. For another surface, use `hermes tools` or the same command with that surface's platform name.
-7. Start a new conversation (or `/reset` an existing one) inside a registered Hermes project. Ask: **“整理一下任务卡”**.
+7. Start a new conversation (or `/reset` an existing one) inside a registered Hermes project, then verify that `task_pool_list` is available and reports the expected project.
 
 A visual panel does not prove that an Agent session has the tools. In that new conversation, verify that `task_pool_list` is discoverable and that its result reports the expected registered project. Tool availability is specific to the current surface, profile, Gateway, and session snapshot.
 
