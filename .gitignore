@@ -1,0 +1,15 @@
+node_modules/
+dist/
+archive/
+evidence/
+docs/REVIEW.md
+AGENTS.md
+MAP.md
+__pycache__/
+*.py[cod]
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+*.log

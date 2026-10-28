@@ -1,0 +1,13 @@
+name: pp-pane
+version: 0.3.0
+description: "Project task pool shared by Hermes Desktop and Agent tools. Access is scoped to the registered project that owns the current session working directory; cards never dispatch work."
+requires_hermes: ">=0.22.2"
+tags:
+  - task-pool
+  - desktop
+  - project-management
+kind: standalone
+provides_tools:
+  - task_pool_list
+  - task_pool_add
+  - task_pool_update

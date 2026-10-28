@@ -1,0 +1,7 @@
+{
+  "name": "pp-pane",
+  "label": "项目任务池",
+  "description": "项目任务池 Agent API，与桌面 pp-pane 插件共用 profile 级数据。",
+  "version": "0.3.0",
+  "api": "plugin_api.py"
+}
