@@ -99,6 +99,37 @@ class AgentToolTests(unittest.TestCase):
         self.assertIn("项目身份未确认，拒绝写入", result)
         self.assertEqual(store.read_board(self.conn, "registered-a")["tasks"], [])
 
+    def test_error_payloads_include_machine_code_and_repair_hint(self):
+        self.ctx.cwd = "C:/Other/Project"
+        result = json.loads(self.ctx.tools["task_pool_add"]["handler"](
+            {"tasks": [{"title": "不应写入"}]}
+        ))
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["code"], "PROJECT_IDENTITY_UNCONFIRMED")
+        self.assertIn("Hermes Projects", result["hint"])
+
+        self.ctx.cwd = "C:/Work/A/src"
+        self.ctx.tools["task_pool_add"]["handler"]({"tasks": [{"title": "卡A"}]})
+        task = store.read_board(self.conn, "registered-a")["tasks"][0]
+        stale = json.loads(self.ctx.tools["task_pool_update"]["handler"](
+            {"task_id": task["id"], "expected_revision": task["revision"] + 5, "status": "doing"}
+        ))
+
+        self.assertFalse(stale["ok"])
+        self.assertEqual(stale["code"], "REVISION_CONFLICT")
+        self.assertIn("task_pool_list", stale["hint"])
+
+    def test_add_description_guides_minimal_card_decomposition(self):
+        description = self.ctx.tools["task_pool_add"]["schema"]["description"]
+
+        for marker in (
+            "one completable step",
+            "split it into separate cards",
+            "acceptance criteria",
+        ):
+            self.assertIn(marker, description)
+
     def test_agent_update_uses_revision_guard(self):
         self.ctx.tools["task_pool_add"]["handler"](
             {"tasks": [{"title": "待更新"}], "request_key": "first"}

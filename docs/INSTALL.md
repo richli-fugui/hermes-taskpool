@@ -81,7 +81,7 @@ Expected behavior in a registered project:
 
 ### The tool returns “项目身份未确认，拒绝写入”
 
-The session working directory is not resolving to an active registered Hermes project. Register or correct the project in Hermes, then start a session whose working directory is inside that project's registered path. Do not pass a project ID or path as a workaround; the tools intentionally do not accept either.
+The session working directory is not resolving to an active registered Hermes project. Failed calls carry a machine-readable `code` and a `hint` (for example `PROJECT_IDENTITY_UNCONFIRMED`, `REVISION_CONFLICT`); follow the hint. Register or correct the project in Hermes, then start a session whose working directory is inside that project's registered path. Do not pass a project ID or path as a workaround; the tools intentionally do not accept either.
 
 ### Desktop panel is missing
 

@@ -41,6 +41,8 @@ _ADD_SCHEMA = _schema(
     "task_pool_add",
     "Create 1–50 cards in the shared task pool for the current registered Hermes project. "
     "Call task_pool_list first to review existing cards and avoid duplicates; after writing, call task_pool_list again to verify project, cards, revisions, and count. "
+    "Prefer small cards: each card is one completable step with a concrete action in the title and acceptance criteria in notes. "
+    "If one card would need multiple steps, sessions, or people, split it into separate cards; use one card per minimal next action instead of an umbrella task. "
     "This only records work; it never dispatches or starts a task. Use request_key to make a retry idempotent. "
     "No project ID or path is accepted; project identity comes from the calling session cwd.",
     {
@@ -100,6 +102,27 @@ def _json_result(value: dict[str, Any]) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
 
 
+_ERROR_META: list[tuple[str, str, str]] = [
+    ("项目身份未确认", "PROJECT_IDENTITY_UNCONFIRMED",
+     "Register the directory in Hermes Projects, then start a new session inside the registered path. Do not pass a project ID or path."),
+    ("任务卡已被修改", "REVISION_CONFLICT",
+     "Call task_pool_list to read the card's current revision, then retry with that value."),
+    ("未找到该项目任务卡", "TASK_NOT_FOUND",
+     "Call task_pool_list to get the current card IDs for this project."),
+    ("相同请求键已用于不同的任务内容", "IDEMPOTENCY_CONFLICT",
+     "Reuse the request_key only for an identical payload; otherwise send a new request_key."),
+]
+
+
+def _error_meta(exc: Exception) -> dict[str, str]:
+    message = str(exc)
+    for needle, code, hint in _ERROR_META:
+        if needle in message:
+            return {"code": code, "hint": hint}
+    return {"code": "VALIDATION_ERROR",
+            "hint": "Fix the issue described in the error and retry; nothing was written."}
+
+
 def register_tools(
     ctx,
     *,
@@ -128,7 +151,7 @@ def register_tools(
             board["project"] = {"id": project_id, "name": str(project.name)}
             return _json_result({"ok": True, **board})
         except Exception as exc:
-            return _json_result({"ok": False, "error": str(exc)})
+            return _json_result({"ok": False, "error": str(exc), **_error_meta(exc)})
         finally:
             if conn is not None:
                 conn.close()
@@ -145,7 +168,7 @@ def register_tools(
             )
             return _json_result({"ok": True, "project_id": project_id, **result})
         except Exception as exc:
-            return _json_result({"ok": False, "error": str(exc)})
+            return _json_result({"ok": False, "error": str(exc), **_error_meta(exc)})
         finally:
             if conn is not None:
                 conn.close()
@@ -164,7 +187,7 @@ def register_tools(
             )
             return _json_result({"ok": True, "project_id": project_id, **result})
         except Exception as exc:
-            return _json_result({"ok": False, "error": str(exc)})
+            return _json_result({"ok": False, "error": str(exc), **_error_meta(exc)})
         finally:
             if conn is not None:
                 conn.close()

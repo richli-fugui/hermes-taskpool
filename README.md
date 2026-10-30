@@ -41,6 +41,18 @@ Tool availability depends on the Agent surface's enabled toolsets and the sessio
 
 Custom Git installs are unreviewed community sources. Review the code before installing; Hermes Desktop plugins run inside the app with the app's authority and are not sandboxed.
 
+## Card granularity
+
+Cards work best as minimal next actions. When adding cards, the Agent tool guidance asks for: one card = one completable step; a concrete action in the title; acceptance criteria in notes; and splitting any card that needs multiple steps, sessions, or people into separate cards. This follows the GTD "next physical action" convention and the small-batch practice used in LLM agent planning research (e.g. least-to-most decomposition), where finer, independently verifiable units are easier to start, finish, and verify.
+
+## Error payloads
+
+Failed tool calls return structured JSON with a machine-readable `code` and a `hint` describing the supported repair, for example `PROJECT_IDENTITY_UNCONFIRMED` (register the project, restart inside its path), `REVISION_CONFLICT` (re-list, retry with the current revision), `TASK_NOT_FOUND`, `IDEMPOTENCY_CONFLICT`, and `VALIDATION_ERROR`. Nothing is written on a rejected call.
+
+## Out of scope
+
+This plugin deliberately does not: dispatch or start work from cards; delete cards; keep a Kanban or todo-list replacement; or sync devices continuously (legacy import is one-time). Features beyond that list are intentionally excluded to keep the pool a simple progress ledger.
+
 ## Data and compatibility
 
 - Tasks are scoped by Hermes project ID and stored in the active Hermes profile/Gateway. Clients connected to the same Gateway and profile share data; different profiles or Gateways have separate stores.

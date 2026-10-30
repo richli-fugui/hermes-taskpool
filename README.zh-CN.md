@@ -41,6 +41,18 @@ hermes tools enable project_task_pool --platform cli
 
 自定义 Git 来源不是经过 Hermes 官方目录审核的插件。安装前请审阅代码；Hermes Desktop 插件在应用权限下运行，并非沙箱隔离。
 
+## 任务卡粒度
+
+任务卡最适合作为"最小下一步"。Agent 工具内置了拆分指引：一张卡 = 一步可独立完成的工作；标题写具体动作；说明里写验收标准；如果一张卡需要多个步骤、多次会话或多人协作，就拆成多张卡。这与 GTD 的"下一个物理动作"约定，以及 LLM 智能体规划研究（如 least-to-most 分解）中的小批次原则一致——更细、可独立验证的单位更容易开始、完成和核验。
+
+## 错误返回
+
+工具调用失败时返回结构化 JSON，包含机器可读的 `code` 和描述修复方式的 `hint`，例如 `PROJECT_IDENTITY_UNCONFIRMED`（登记项目后从登记路径重启会话）、`REVISION_CONFLICT`（重新读取列表后用当前 revision 重试）、`TASK_NOT_FOUND`、`IDEMPOTENCY_CONFLICT` 和 `VALIDATION_ERROR`。被拒绝的调用不会写入任何数据。
+
+## 刻意不做
+
+本插件刻意不提供：从任务卡派发或启动工作；删除任务卡；替代 Kanban 或 todo 列表；持续的跨设备同步（旧数据导入是一次性的）。超出该清单的功能被有意排除，以保持任务池作为简单的进度台账。
+
 ## 数据与兼容性
 
 - 任务按 Hermes 项目 ID 隔离，存放在当前 profile/Gateway 中。同一 Gateway 和 profile 下的客户端共用数据；不同 profile 或 Gateway 使用不同存储。
